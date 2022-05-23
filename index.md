@@ -1,8 +1,8 @@
-# Pepperi Addons Coding Guidelines and Best Practices
+# Pepperi Addons Development Guidelines and Best Practices
 
 ## Introduction
 
-The following is a list of the coding guidelines and best practices for Pepperi Addons.
+The following is a list of the development guidelines and best practices for Pepperi Addons.
 
 These guidelines and best practices are used to ensure that the code is written in a way that is consistent with the Pepperi Addons coding standards.
 
