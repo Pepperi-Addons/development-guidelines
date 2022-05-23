@@ -61,7 +61,7 @@ class MyClass {
 
 Class names should describe the purpose of the class. 
 
-Every class should have a clear purpose.
+Every class should have one clear purpose.
 
 Every class should have a separate file. the file should be named after the class. eg. `my-class.ts`
 
@@ -123,6 +123,9 @@ function myFunction(myParameter: string) {
 Function names should describe the purpose of the function.
 
 Every function should have one clear purpose.
+
+> ### A function should do one thing, and it should do it well.
+> Robert C. Martin (aka Uncle Bob)
 
 Functions should not be very long, when a function is long, it should be split into multiple functions. A function that is more than 5 or 6 lines long is considered to be long.
 
