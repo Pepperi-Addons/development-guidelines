@@ -9,17 +9,40 @@ These guidelines and best practices are used to ensure that the code is written 
 These guidelines should be enforced by code reviewers and developers.
 
 
-## Addon Name
+### Addon Name
 The name of the addon should be in kebab-case.
 
 The name of the repository should be in kebab-case as well, and should be the same as the addon name.
 
 If the name of the addon changes, the name of the repository should also change.
 
+### Rest API
 
-## Typescript projects
+#### URL
+The URL in the REST API should be snake_case.
+This should be done for both public and private APIs.
 
----
+#### Method
+In Pepperi REST APIs we use the GET and POST API methods.
+
+GET methods should be used for retrieving data.
+
+POST methods should be used for the following:
+* Creating a new resource
+* Updating an existing resource
+* Deleting an existing resource
+* Performing an operation
+* Retrieving data when the parameters are either to large to fit in the URL or when their data type is complex.
+
+#### Query Parameters
+The query parameters in the REST API should be snake_case.
+
+#### Body Parameters
+The body parameters in the REST API should be PascalCase.
+
+#### Response
+The response in the REST API should be PascalCase.
+
 ### File Names
 The file names should be in kebab-case.
 
@@ -27,7 +50,6 @@ Related files should be grouped into folders.
 
 Folder names should be in kebab-case.
 
----
 ### Classes
 Class names should be PascalCase.
 
@@ -47,7 +69,6 @@ Classes should not be very long, when a class is long, it should be split into m
 
 Classes that follow a certain design pattern, should have a name that describes the pattern, as well as the purpose of the class. eg. `MyObjectService`, `MyObjectProducer`, `FooCommand`.
 
----
 ### Enums
 Enum names should be PascalCase.
 The enum values should be PascalCase as well.
@@ -111,7 +132,6 @@ Function return types should be typed.
 
 Do not use `any` as a paramter type unless you are sure that it is necessary.
 
----
 ### Interfaces
 Interface names should be PascalCase.
 
