@@ -50,6 +50,11 @@ Related files should be grouped into folders.
 
 Folder names should be in kebab-case.
 
+### Events
+Events should be in kebab-case.
+
+eg. `on-load`, `on-click`, `on-change`
+
 ### Classes
 Class names should be PascalCase.
 
@@ -87,7 +92,7 @@ When defining an enum as a string property that has a fixed set of values, the e
 const MyTypes = [
   'Value1',
   'Value2',
-];
+] as const;
 type MyType = typeof MyTypes[number];
 ```
 
@@ -154,6 +159,31 @@ e.g.
 interface IMyDataSource {
   // ...
 }
+```
+
+### Variables
+Scope variables should be in camelCase.
+
+e.g.
+``` typescript
+let myVariable = 'myValue';
+```
+
+Variable names should describe the purpose of the variable.
+
+Use `const` for variables that should not change.
+
+Use `let` for variables that should change.
+
+Never use `var` for variables.
+
+Variables that their type can't be inferred should be typed.
+
+e.g.
+``` typescript
+let myVariable: string;
+
+let myOtherVariable = 'No need to type';
 ```
 
 ## Angular Projects
