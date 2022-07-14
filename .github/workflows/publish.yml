@@ -4,6 +4,9 @@ name: PublishAddon
 # events but only for the master branch
 on:
   workflow_call:
+    secrets:
+      PEPPERI_ADDON_PUBLISH_KEY:
+        required: true
 jobs:
   publish:
     runs-on: ubuntu-latest
