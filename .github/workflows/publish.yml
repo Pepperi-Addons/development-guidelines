@@ -5,8 +5,11 @@ name: PublishAddon
 on:
   workflow_call:
     secrets:
+      PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS:
+        required: false
       PEPPERI_ADDON_PUBLISH_KEY:
         required: true
+      
 jobs:
   publish:
     runs-on: ubuntu-latest
@@ -22,6 +25,13 @@ jobs:
     - uses: actions/setup-node@v2
       with:
         node-version: '14'
+        
+    - name: Optionally run npmrc
+      env:
+        PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS: ${{ secrets.PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS }}
+      if: "${{ env.PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS != '' }}"
+      run: echo "//registry.npmjs.org/:_authToken=${{ env.PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS }}" > ~/.npmrc
+
     # Install node modules in projects
     - name: Installation
       run: npm run init
