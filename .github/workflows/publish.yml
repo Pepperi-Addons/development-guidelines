@@ -28,7 +28,7 @@ jobs:
         
     - name: Optionally run npmrc
       env:
-        PEPPERI_ADDON_INFRA_SDK_READ_ACCESS: ${{ secrets.PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS }}
+        PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS: ${{ secrets.PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS }}
       if: "${{ env.PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS != '' }}"
       run: npm config set registry http://registry.npmjs.org && echo "//registry.npmjs.org/:_authToken=${{ env.PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS }}" > ~/.npmrc
 
