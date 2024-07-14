@@ -5,9 +5,10 @@ name: PublishAddon
 on:
   workflow_call:
     secrets:
+      PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS:
+        required: false
       PEPPERI_ADDON_PUBLISH_KEY:
         required: true
-      PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS:
       
 jobs:
   publish:
