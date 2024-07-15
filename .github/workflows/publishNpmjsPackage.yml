@@ -20,6 +20,11 @@ jobs:
           registry-url: 'https://registry.npmjs.org/'
           # Defaults to the user or organization that owns the workflow file
           scope: '@Pepperi-Addons'
+          
+        # Set up git
+      - name: Setup GIT
+        run: git config --global user.email "action@github.com" && git config --global user.name "GitHub Action"
+
       - run: npm i
       - run: npm publish
         env:
