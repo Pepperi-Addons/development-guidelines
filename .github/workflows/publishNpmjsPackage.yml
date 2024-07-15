@@ -32,4 +32,4 @@ jobs:
 
       # Commit and push the new package version
       - name: Commit changes
-        run: git add . && git commit -m "version bump" && git push -f
+        run: git push
