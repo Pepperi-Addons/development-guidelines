@@ -1,0 +1,54 @@
+name: PublishNpmjsPackage
+
+on:
+  workflow_call:
+    secrets:
+      NPM_PUBLISH_TOKEN:
+        required: true
+    inputs:
+      package_root:
+        description: "A relative path to the package's location. Default is './', the repo's root"
+        default: './'
+        required: false
+        type: string
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest 
+    permissions: 
+      contents: write
+    steps:
+      - uses: actions/checkout@v2
+      # Setup .npmrc file to publish to npmjs
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org/'
+          # Defaults to the user or organization that owns the workflow file
+          scope: '@Pepperi-Addons'
+          
+        # Set up git
+      - name: Setup GIT
+        run: git config --global user.email "action@github.com" && git config --global user.name "GitHub Action"
+
+      # cd into the package's root
+      - name: cd into package root
+        run: cd ${{ inputs.package_root }}
+      
+      - run: npm i
+      - name: Commit any outstanding changes
+        run: |
+          git add .
+          if ! git diff-index --quiet HEAD --; then
+            git commit -m "Outstanding changes"
+            git push
+          else
+            echo "No changes to commit"
+          fi
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
+
+      # Commit and push the new package version
+      - name: Commit changes
+        run: git push
