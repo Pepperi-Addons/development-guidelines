@@ -1,0 +1,30 @@
+name: PublishNpmjsPackage
+
+on:
+  workflow_call:
+    secrets:
+      PEPPERI_NPMJS_PRIVATE_REPOS_PUBLISH:
+        required: true
+      
+jobs:
+  build:
+    runs-on: ubuntu-latest 
+    permissions: 
+      contents: write
+    steps:
+      - uses: actions/checkout@v2
+      # Setup .npmrc file to publish to npmjs
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '16.x'
+          registry-url: 'https://registry.npmjs.org/'
+          # Defaults to the user or organization that owns the workflow file
+          scope: '@Pepperi-Addons'
+      - run: npm i
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.PEPPERI_NPMJS_PRIVATE_REPOS_PUBLISH }}
+
+      # Commit and push the new package version
+      - name: Commit changes
+        run: git add . && git commit -m "version bump" && git push -f
