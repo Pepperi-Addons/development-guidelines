@@ -5,6 +5,12 @@ on:
     secrets:
       PEPPERI_NPMJS_PRIVATE_REPOS_PUBLISH:
         required: true
+    inputs:
+      package_root:
+        description: "A relative path to the package's location. Default is './', the repo's root"
+        default: './'
+        required: false
+        type: string
       
 jobs:
   build:
@@ -25,6 +31,10 @@ jobs:
       - name: Setup GIT
         run: git config --global user.email "action@github.com" && git config --global user.name "GitHub Action"
 
+      # cd into the package's root
+      - name: cd into package root
+        run: cd ${{ inputs.package_root }}
+      
       - run: npm i
       - name: Commit any outstanding changes
         run: |
