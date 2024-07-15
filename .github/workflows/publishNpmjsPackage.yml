@@ -26,15 +26,19 @@ jobs:
         run: git config --global user.email "action@github.com" && git config --global user.name "GitHub Action"
 
       - run: npm i
+      - name: Commit any outstanding changes
+        run: |
+          git add .
+          if ! git diff-index --quiet HEAD --; then
+            git commit -m "Outstanding changes"
+            git push
+          else
+            echo "No changes to commit"
+          fi
       - run: npm publish
         env:
           NODE_AUTH_TOKEN: ${{ secrets.PEPPERI_NPMJS_PRIVATE_REPOS_PUBLISH }}
 
       # Commit and push the new package version
       - name: Commit changes
-        run: |
-          git add .
-          if ! git diff-index --quiet HEAD --; then
-            git commit -m "version bump"
-          fi
-          git push
+        run: git push
