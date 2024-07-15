@@ -3,7 +3,7 @@ name: PublishNpmjsPackage
 on:
   workflow_call:
     secrets:
-      PEPPERI_NPMJS_PRIVATE_REPOS_PUBLISH:
+      NPM_PUBLISH_TOKEN:
         required: true
     inputs:
       package_root:
@@ -47,7 +47,7 @@ jobs:
           fi
       - run: npm publish
         env:
-          NODE_AUTH_TOKEN: ${{ secrets.PEPPERI_NPMJS_PRIVATE_REPOS_PUBLISH }}
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_PUBLISH_TOKEN }}
 
       # Commit and push the new package version
       - name: Commit changes
