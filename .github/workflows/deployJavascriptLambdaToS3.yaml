@@ -1,0 +1,51 @@
+name: Deploy JS Lambda to S3
+
+on:
+  workflow_call:
+    inputs:
+      s3_base_path:
+        required: true
+        type: string
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18  # Adjust based on your project
+
+      - name: Install dependencies
+        run: npm install --production  # Only installs necessary dependencies
+
+      - name: Create ZIP file (with node_modules)
+        run: |
+          mkdir -p build
+          zip -r build/lambda.zip . -x ".git/*" ".github/*" "build/*"
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.PUT_LAMBDA_HANDLER_ON_S3_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.PUT_LAMBDA_HANDLER_ON_S3_SECRET_KEY }}
+          aws-region: ${{ secrets.LAMBDA_HANDLER_S3_REGION }}
+
+      - name: Upload to S3 (LATEST)
+        run: |
+          aws s3 cp build/lambda.zip s3://${{ secrets.S3_BUCKET }}/${{ inputs.s3_base_path }}/LATEST
+
+      - name: Upload to S3 (Commit SHA)
+        run: |
+          COMMIT_SHA=$(git rev-parse --short HEAD)
+          aws s3 cp build/lambda.zip s3://${{ secrets.S3_BUCKET }}/${{ inputs.s3_base_path }}/$COMMIT_SHA
+
+      - name: Output Deployment Info
+        run: |
+          echo "Uploaded to S3:"
+          echo "LATEST: s3://${{ secrets.S3_BUCKET }}/${{ inputs.s3_base_path }}/LATEST"
+          echo "Versioned: s3://${{ secrets.S3_BUCKET }}/${{ inputs.s3_base_path }}/$COMMIT_SHA"
