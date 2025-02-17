@@ -18,7 +18,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: 18  # Adjust based on your project
+          node-version: 18
+          
+      - name: Create an .npmrc
+        env:
+          PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS: ${{ secrets.PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS }}
+        if: "${{ env.PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS != '' }}"
+        run: echo "//registry.npmjs.org/:_authToken=${{ env.PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS }}" > ~/.npmrc
 
       - name: Install dependencies
         run: npm install --production  # Only installs necessary dependencies
