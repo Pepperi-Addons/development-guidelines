@@ -10,8 +10,8 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    env:
-      S3_PATH: "${{ secrets.LAMBDA_HANDLER_S3_BUCKET_NAME }}/Lambda-handlers/${{ inputs.s3_base_path }}"
+    # env:
+      # S3_PATH: "${{ secrets.LAMBDA_HANDLER_S3_BUCKET_NAME }}/Lambda-handlers/${{ inputs.s3_base_path }}"
       
     steps:
     
@@ -43,7 +43,10 @@ jobs:
           aws-access-key-id: ${{ secrets.PUT_LAMBDA_HANDLER_ON_S3_ACCESS_KEY }}
           aws-secret-access-key: ${{ secrets.PUT_LAMBDA_HANDLER_ON_S3_SECRET_KEY }}
           aws-region: ${{ secrets.LAMBDA_HANDLER_S3_REGION }}
-
+          
+      - name: Calculate S3 path    
+        run: echo "S3_PATH = ${{ secrets.LAMBDA_HANDLER_S3_BUCKET_NAME }}/Lambda-handlers/${{ inputs.s3_base_path }}" >> $GITHUB_ENV
+        
       - name: Upload to S3 (LATEST)
         run: |
           aws s3 cp build/lambda.zip s3://${{ env.S3_PATH }}/LATEST
