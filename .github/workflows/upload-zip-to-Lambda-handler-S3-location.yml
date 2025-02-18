@@ -1,0 +1,39 @@
+name: Deploy zip file Lambda handler S3 location
+
+on:
+  workflow_call:
+    inputs:
+      s3_base_path:
+        required: true
+        type: string
+      zip_file:
+        required: true
+        type: string
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    env:
+      S3_PATH: "${{ secrets.LAMBDA_HANDLER_S3_BUCKET_NAME }}/Lambda-handlers/${{ inputs.s3_base_path }}"
+      
+    steps:
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          aws-access-key-id: ${{ secrets.PUT_LAMBDA_HANDLER_ON_S3_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.PUT_LAMBDA_HANDLER_ON_S3_SECRET_KEY }}
+          aws-region: ${{ secrets.LAMBDA_HANDLER_S3_REGION }}
+        
+      - name: Upload to S3 (LATEST)
+        run: |
+          aws s3 cp ${{ inputs.zip_file }} s3://${{ env.S3_PATH }}/LATEST/code.zip
+
+      - name: Upload to S3 (Commit SHA) # Just so we have a pointer from older versions to their commits
+        run: |
+          COMMIT_SHA=$(git rev-parse --short HEAD)
+          aws s3 cp ${{ inputs.zip_file }} s3://${{ env.S3_PATH }}/$COMMIT_SHA/code.zip
+
+      - name: Output Deployment Info
+        run: |
+          echo "Uploaded to S3:"
+          echo "LATEST: s3://${{ env.S3_PATH }}/LATEST/code.zip"
+          echo "Versioned: s3://${{ env.S3_PATH }}/$COMMIT_SHA/code.zip"
