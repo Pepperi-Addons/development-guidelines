@@ -30,7 +30,7 @@ jobs:
         run: echo "//registry.npmjs.org/:_authToken=${{ env.PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS }}" > ~/.npmrc
 
       - name: Install dependencies
-        run: npm install --production  # Only installs necessary dependencies
+        run: npm install
         
       - name: Build the project
         run: npm run build
