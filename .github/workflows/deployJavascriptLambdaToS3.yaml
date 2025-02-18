@@ -11,7 +11,7 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      S3_PATH: "${{ secrets.LAMBDA_HANDLER_S3_BUCKET_NAME }}/Lambda-handlers/${{ inputs.s3_base_path }}"
+      S3_PATH: "${{ secrets.LAMBDA_HANDLER_S3_BUCKET_NAME }}/Lambda-handlers/${{ inputs.s3_base_path }}/code.zip"
       
     steps:
     
