@@ -11,8 +11,8 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      S3_BASE_PATH: "Lambda-handlers/${{ inputs.s3_base_path }}"
       LOCAL_CODE_ZIP_PATH: "build/code.zip"
+      S3_BASE_PATH: "Lambda-handlers/${{ inputs.s3_base_path }}"
       SSM_PARAMETER_NAME: "/lambdas-code/${{ inputs.s3_base_path }}/latest-s3-key"
 
       
