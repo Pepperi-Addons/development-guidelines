@@ -15,7 +15,6 @@ jobs:
       S3_BASE_PATH: "Lambda-handlers/${{ inputs.s3_base_path }}"
       SSM_PARAMETER_NAME: "/lambdas-code/${{ inputs.s3_base_path }}/latest-s3-key"
 
-      
     steps:
     
       - name: Checkout repository
