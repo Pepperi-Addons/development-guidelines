@@ -1,0 +1,30 @@
+name: "Update SSM Parameter"
+description: "Updates the SSM parameter with the latest deployed S3 path for both PROD and SANDBOX"
+inputs:
+  prod-s3-versioned-path:
+    required: true
+    description: "S3 path for the commit SHA version in PROD"
+  sandbox-s3-versioned-path:
+    required: true
+    description: "S3 path for the commit SHA version in SANDBOX"
+
+runs:
+  using: "composite"
+  steps:
+    - name: Update PROD SSM Parameter
+      run: |
+        aws ssm put-parameter \
+          --name "/lambdas-code/latest-s3-key" \
+          --value "s3://${{ inputs.prod-s3-versioned-path }}" \
+          --type String \
+          --overwrite
+      shell: bash
+
+    - name: Update SANDBOX SSM Parameter
+      run: |
+        aws ssm put-parameter \
+          --name "/lambdas-code/latest-s3-key" \
+          --value "s3://${{ inputs.sandbox-s3-versioned-path }}" \
+          --type String \
+          --overwrite
+      shell: bash
