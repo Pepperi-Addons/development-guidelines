@@ -1,0 +1,62 @@
+name: "Deploy Lambda to S3"
+description: "Deploys the Lambda ZIP to an S3 bucket and updates SSM."
+inputs:
+  aws-access-key-id:
+    description: "AWS Access Key ID"
+    required: true
+  aws-secret-access-key:
+    description: "AWS Secret Access Key"
+    required: true
+  aws-region:
+    description: "AWS Region"
+    required: true
+  s3-bucket:
+    description: "S3 Bucket name"
+    required: true
+  s3-base-path:
+    description: "Base path for S3 upload"
+    required: true
+  ssm-parameter-name:
+    description: "SSM Parameter to update with the latest S3 path"
+    required: true
+  zip-file-path:
+    description: "Path to the ZIP file to upload"
+    required: true
+runs:
+  using: "composite"
+  steps:
+    - name: Configure AWS Credentials
+      uses: aws-actions/configure-aws-credentials@v3
+      with:
+        aws-access-key-id: ${{ inputs.aws-access-key-id }}
+        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
+        aws-region: ${{ inputs.aws-region }}
+
+    - name: Upload ZIP to S3 (LATEST)
+      run: |
+        aws s3 cp ${{ inputs.zip-file-path }} s3://${{ inputs.s3-bucket }}/${{ inputs.s3-base-path }}/LATEST/code.zip
+      shell: bash
+
+    - name: Upload ZIP to S3 (Commit SHA)
+      run: |
+        COMMIT_SHA=$(git rev-parse --short HEAD)
+        aws s3 cp ${{ inputs.zip-file-path }} s3://${{ inputs.s3-bucket }}/${{ inputs.s3-base-path }}/$COMMIT_SHA/code.zip
+      shell: bash
+
+    - name: Update SSM Parameter with Latest S3 Key
+      run: |
+        COMMIT_SHA=$(git rev-parse --short HEAD)
+        aws ssm put-parameter \
+          --name "${{ inputs.ssm-parameter-name }}" \
+          --value "s3://${{ inputs.s3-bucket }}/${{ inputs.s3-base-path }}/$COMMIT_SHA/code.zip" \
+          --type String \
+          --overwrite
+      shell: bash
+
+    - name: Output Deployment Info
+      run: |
+        COMMIT_SHA=$(git rev-parse --short HEAD)
+        echo "Deployment Info:"
+        echo "LATEST: s3://${{ inputs.s3-bucket }}/${{ inputs.s3-base-path }}/LATEST/code.zip"
+        echo "Versioned: s3://${{ inputs.s3-bucket }}/${{ inputs.s3-base-path }}/$COMMIT_SHA/code.zip"
+      shell: bash
