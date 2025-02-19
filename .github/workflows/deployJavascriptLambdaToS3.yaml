@@ -13,7 +13,7 @@ jobs:
     env:
       LOCAL_CODE_ZIP_PATH: "build/code.zip"
       S3_BASE_PATH: "Lambda-handlers/${{ inputs.s3_base_path }}"
-      SSM_PARAMETER_NAME: "/lambdas-code/latest-s3-key"
+      SSM_PARAMETER_NAME: "/lambdas-code/${{ inputs.s3_base_path }}/latest-s3-key"
       
     steps:
     
@@ -46,9 +46,9 @@ jobs:
           aws-secret-access-key: ${{ secrets.PROD_PUT_LAMBDA_HANDLER_ON_S3_SECRET_KEY }}
           aws-region: ${{ secrets.PROD_LAMBDA_HANDLER_S3_REGION }}
           s3-bucket: ${{ secrets.PROD_LAMBDA_HANDLER_S3_BUCKET_NAME }}
-          s3-base-path: ${{ env.S3_BASE_PATH}}"
-          ssm-parameter-name: ${{ env.SSM_PARAMETER_NAME}}"
-          zip-file-path: "${{ env.LOCAL_CODE_ZIP_PATH }}"
+          s3-base-path: ${{ env.S3_BASE_PATH}}
+          ssm-parameter-name: ${{ env.SSM_PARAMETER_NAME}}
+          zip-file-path: ${{ env.LOCAL_CODE_ZIP_PATH }}
   
       - name: Deploy to SANDBOX
         uses: ./.github/actions/deploy-lambda-code-to-env
@@ -57,7 +57,7 @@ jobs:
           aws-secret-access-key: ${{ secrets.SANDBOX_PUT_LAMBDA_HANDLER_ON_S3_SECRET_KEY }}
           aws-region: ${{ secrets.SANDBOX_LAMBDA_HANDLER_S3_REGION }}
           s3-bucket: ${{ secrets.SANDBOX_LAMBDA_HANDLER_S3_BUCKET_NAME }}
-          s3-base-path: "Lambda-handlers/${{ inputs.s3_base_path }}"
-          ssm-parameter-name: "/lambdas-code/latest-s3-key"
-          zip-file-path: "${{ env.LOCAL_CODE_ZIP_PATH }}"
+          s3-base-path: ${{ env.S3_BASE_PATH}}
+          ssm-parameter-name: ${{ env.SSM_PARAMETER_NAME}}
+          zip-file-path: ${{ env.LOCAL_CODE_ZIP_PATH }}
   
