@@ -11,7 +11,10 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     env:
-      S3_PATH: "${{ secrets.LAMBDA_HANDLER_S3_BUCKET_NAME }}/Lambda-handlers/${{ inputs.s3_base_path }}"
+      S3_BASE_PATH: "Lambda-handlers/${{ inputs.s3_base_path }}"
+      LOCAL_CODE_ZIP_PATH: "build/code.zip"
+      SSM_PARAMETER_NAME: "/lambdas-code/latest-s3-key"
+
       
     steps:
     
@@ -30,35 +33,36 @@ jobs:
         run: echo "//registry.npmjs.org/:_authToken=${{ env.PEPPERI_NPMJS_PRIVATE_REPOS_READ_ACCESS }}" > ~/.npmrc
 
       - name: Install dependencies
-        run: npm install
+        run: npm install # We have to install everything, including devDependencies, to transpile into js
         
       - name: Build the project
         run: npm run build
 
       - name: Create ZIP file (only dist contents) # This assumes the build result, including node_modules, will be places in ./dist folder
         run: |
+          mkdir -p build
           cd dist
-          zip -r ../lambda.zip .  # Zip only the contents of dist (not the folder itself)
+          zip -r ../${{ env.LOCAL_CODE_ZIP_PATH }} .  # Zip only the contents of dist (not the folder itself)
           cd ..
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v3
-        with:
-          aws-access-key-id: ${{ secrets.PUT_LAMBDA_HANDLER_ON_S3_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.PUT_LAMBDA_HANDLER_ON_S3_SECRET_KEY }}
-          aws-region: ${{ secrets.LAMBDA_HANDLER_S3_REGION }}
         
-      - name: Upload to S3 (LATEST)
-        run: |
-          aws s3 cp lambda.zip s3://${{ env.S3_PATH }}/LATEST/code.zip
-
-      - name: Upload to S3 (Commit SHA) # Just so we have a pointer from older versions to their commits
-        run: |
-          COMMIT_SHA=$(git rev-parse --short HEAD)
-          aws s3 cp lambda.zip s3://${{ env.S3_PATH }}/$COMMIT_SHA/code.zip
-
-      - name: Output Deployment Info
-        run: |
-          echo "Uploaded to S3:"
-          echo "LATEST: s3://${{ env.S3_PATH }}/LATEST/code.zip"
-          echo "Versioned: s3://${{ env.S3_PATH }}/$COMMIT_SHA/code.zip"
+      - name: Deploy to PROD
+        uses: ./.github/actions/deploy-lambda-code-to-env
+        with:
+          aws-access-key-id: ${{ secrets.PROD_PUT_LAMBDA_HANDLER_ON_S3_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.PROD_PUT_LAMBDA_HANDLER_ON_S3_SECRET_KEY }}
+          aws-region: ${{ secrets.PROD_LAMBDA_HANDLER_S3_REGION }}
+          s3-bucket: ${{ secrets.PROD_LAMBDA_HANDLER_S3_BUCKET_NAME }}
+          s3-base-path: ${{ env.S3_BASE_PATH}}"
+          ssm-parameter-name: ${{ env.SSM_PARAMETER_NAME}}"
+          zip-file-path: "${{ env.LOCAL_CODE_ZIP_PATH }}"
+  
+      - name: Deploy to SANDBOX
+        uses: ./.github/actions/deploy-lambda-code-to-env
+        with:
+          aws-access-key-id: ${{ secrets.SANDBOX_PUT_LAMBDA_HANDLER_ON_S3_ACCESS_KEY }}
+          aws-secret-access-key: ${{ secrets.SANDBOX_PUT_LAMBDA_HANDLER_ON_S3_SECRET_KEY }}
+          aws-region: ${{ secrets.SANDBOX_LAMBDA_HANDLER_S3_REGION }}
+          s3-bucket: ${{ secrets.SANDBOX_LAMBDA_HANDLER_S3_BUCKET_NAME }}
+          s3-base-path: "Lambda-handlers/${{ inputs.s3_base_path }}"
+          ssm-parameter-name: "/lambdas-code/latest-s3-key"
+          zip-file-path: "${{ env.LOCAL_CODE_ZIP_PATH }}"
