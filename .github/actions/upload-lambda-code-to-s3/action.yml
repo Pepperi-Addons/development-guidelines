@@ -1,41 +1,33 @@
 name: "Upload to S3"
-description: "Uploads the lambda zip to S3"
+description: "Uploads the lambda zip to both PROD and SANDBOX S3"
 inputs:
   source-file-path:
-    required: false
-    description: "The source file's path to be uploaded to S3"
-  aws-access-key-id:
     required: true
-    description: "AWS Access Key ID"
-  aws-secret-access-key:
+    description: "Path to source file to be uploaded to S3"
+  prod-s3-latest-path:
     required: true
-    description: "AWS Secret Access Key"
-  aws-region:
+    description: "S3 path for the LATEST version in PROD"
+  prod-s3-versioned-path:
     required: true
-    description: "AWS Region"
-  s3-latest-path:
+    description: "S3 path for the commit SHA version in PROD"
+  sandbox-s3-latest-path:
     required: true
-    description: "Full S3 path for the LATEST version (including filename)"
-  s3-versioned-path:
+    description: "S3 path for the LATEST version in SANDBOX"
+  sandbox-s3-versioned-path:
     required: true
-    description: "Full S3 path for the commit SHA version (including filename)"
+    description: "S3 path for the commit SHA version in SANDBOX"
 
 runs:
   using: "composite"
   steps:
-    - name: Configure AWS Credentials
-      uses: aws-actions/configure-aws-credentials@v3
-      with:
-        aws-access-key-id: ${{ inputs.aws-access-key-id }}
-        aws-secret-access-key: ${{ inputs.aws-secret-access-key }}
-        aws-region: ${{ inputs.aws-region }}
-
-    - name: Upload to S3 (LATEST)
+    - name: Upload to PROD S3
       run: |
-        aws s3 cp ${{ inputs.source-file-path }} s3://${{ inputs.s3-latest-path }}
+        aws s3 cp ${{ inputs.source-file-path }} s3://${{ inputs.prod-s3-latest-path }}
+        aws s3 cp ${{ inputs.source-file-path }} s3://${{ inputs.prod-s3-versioned-path }}
       shell: bash
 
-    - name: Upload to S3 (Commit SHA)
+    - name: Upload to SANDBOX S3
       run: |
-        aws s3 cp ${{ inputs.source-file-path }} s3://${{ inputs.s3-versioned-path }}
+        aws s3 cp ${{ inputs.source-file-path }} s3://${{ inputs.sandbox-s3-latest-path }}
+        aws s3 cp ${{ inputs.source-file-path }} s3://${{ inputs.sandbox-s3-versioned-path }}
       shell: bash
