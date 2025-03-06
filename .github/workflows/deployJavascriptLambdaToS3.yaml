@@ -39,38 +39,38 @@ jobs:
           mkdir -p build
           zip -r ${{ env.LOCAL_CODE_ZIP_PATH }} . -x ".git/*" ".github/*" "build/*"
 
-      - name: Deploy to PROD
-        uses: Pepperi-Addons/development-guidelines/.github/actions/deploy-lambda-code-to-env@master
-        with:
-          aws-access-key-id: ${{ secrets.PROD_PUT_LAMBDA_HANDLER_ON_S3_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.PROD_PUT_LAMBDA_HANDLER_ON_S3_SECRET_KEY }}
-          aws-region: ${{ secrets.PROD_LAMBDA_HANDLER_S3_REGION }}
-          s3-bucket: ${{ secrets.PROD_LAMBDA_HANDLER_S3_BUCKET_NAME }}
-          s3-base-path: ${{ env.S3_BASE_PATH}}
-          ssm-parameter-name: ${{ env.SSM_PARAMETER_NAME}}
-          zip-file-path: ${{ env.LOCAL_CODE_ZIP_PATH }}
+      # - name: Deploy to PROD
+      #   uses: Pepperi-Addons/development-guidelines/.github/actions/deploy-lambda-code-to-env@master
+      #   with:
+      #     aws-access-key-id: ${{ secrets.PROD_PUT_LAMBDA_HANDLER_ON_S3_ACCESS_KEY }}
+      #     aws-secret-access-key: ${{ secrets.PROD_PUT_LAMBDA_HANDLER_ON_S3_SECRET_KEY }}
+      #     aws-region: ${{ secrets.PROD_LAMBDA_HANDLER_S3_REGION }}
+      #     s3-bucket: ${{ secrets.PROD_LAMBDA_HANDLER_S3_BUCKET_NAME }}
+      #     s3-base-path: ${{ env.S3_BASE_PATH}}
+      #     ssm-parameter-name: ${{ env.SSM_PARAMETER_NAME}}
+      #     zip-file-path: ${{ env.LOCAL_CODE_ZIP_PATH }}
 
-      - name: Deploy to EU
-        uses: Pepperi-Addons/development-guidelines/.github/actions/deploy-lambda-code-to-env@master
-        with:
-          aws-access-key-id: ${{ secrets.EU_PUT_LAMBDA_HANDLER_ON_S3_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.EU_PUT_LAMBDA_HANDLER_ON_S3_SECRET_KEY }}
-          aws-region: ${{ secrets.EU_LAMBDA_HANDLER_S3_REGION }}
-          s3-bucket: ${{ secrets.EU_LAMBDA_HANDLER_S3_BUCKET_NAME }}
-          s3-base-path: ${{ env.S3_BASE_PATH}}
-          ssm-parameter-name: ${{ env.SSM_PARAMETER_NAME}}
-          zip-file-path: ${{ env.LOCAL_CODE_ZIP_PATH }}
+      # - name: Deploy to EU
+      #   uses: Pepperi-Addons/development-guidelines/.github/actions/deploy-lambda-code-to-env@master
+      #   with:
+      #     aws-access-key-id: ${{ secrets.EU_PUT_LAMBDA_HANDLER_ON_S3_ACCESS_KEY }}
+      #     aws-secret-access-key: ${{ secrets.EU_PUT_LAMBDA_HANDLER_ON_S3_SECRET_KEY }}
+      #     aws-region: ${{ secrets.EU_LAMBDA_HANDLER_S3_REGION }}
+      #     s3-bucket: ${{ secrets.EU_LAMBDA_HANDLER_S3_BUCKET_NAME }}
+      #     s3-base-path: ${{ env.S3_BASE_PATH}}
+      #     ssm-parameter-name: ${{ env.SSM_PARAMETER_NAME}}
+      #     zip-file-path: ${{ env.LOCAL_CODE_ZIP_PATH }}
   
-      - name: Deploy to SANDBOX
-        uses: Pepperi-Addons/development-guidelines/.github/actions/deploy-lambda-code-to-env@master
-        with:
-          aws-access-key-id: ${{ secrets.SANDBOX_PUT_LAMBDA_HANDLER_ON_S3_ACCESS_KEY }}
-          aws-secret-access-key: ${{ secrets.SANDBOX_PUT_LAMBDA_HANDLER_ON_S3_SECRET_KEY }}
-          aws-region: ${{ secrets.SANDBOX_LAMBDA_HANDLER_S3_REGION }}
-          s3-bucket: ${{ secrets.SANDBOX_LAMBDA_HANDLER_S3_BUCKET_NAME }}
-          s3-base-path: ${{ env.S3_BASE_PATH}}
-          ssm-parameter-name: ${{ env.SSM_PARAMETER_NAME}}
-          zip-file-path: ${{ env.LOCAL_CODE_ZIP_PATH }}
+      # - name: Deploy to SANDBOX
+      #   uses: Pepperi-Addons/development-guidelines/.github/actions/deploy-lambda-code-to-env@master
+      #   with:
+      #     aws-access-key-id: ${{ secrets.SANDBOX_PUT_LAMBDA_HANDLER_ON_S3_ACCESS_KEY }}
+      #     aws-secret-access-key: ${{ secrets.SANDBOX_PUT_LAMBDA_HANDLER_ON_S3_SECRET_KEY }}
+      #     aws-region: ${{ secrets.SANDBOX_LAMBDA_HANDLER_S3_REGION }}
+      #     s3-bucket: ${{ secrets.SANDBOX_LAMBDA_HANDLER_S3_BUCKET_NAME }}
+      #     s3-base-path: ${{ env.S3_BASE_PATH}}
+      #     ssm-parameter-name: ${{ env.SSM_PARAMETER_NAME}}
+      #     zip-file-path: ${{ env.LOCAL_CODE_ZIP_PATH }}
 
       - name: Deploy to DEV
         uses: Pepperi-Addons/development-guidelines/.github/actions/deploy-lambda-code-to-env@master
