@@ -48,7 +48,7 @@ runs:
         COMMIT_SHA=$(git rev-parse --short HEAD)
         aws ssm put-parameter \
           --name "${{ inputs.ssm-parameter-name }}" \
-          --value "s3://${{ inputs.s3-bucket }}/${{ inputs.s3-base-path }}/$COMMIT_SHA/code.zip" \
+          --value "${{ inputs.s3-base-path }}/$COMMIT_SHA/code.zip" \
           --type String \
           --overwrite
       shell: bash
